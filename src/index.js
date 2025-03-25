@@ -1,4 +1,6 @@
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
+console.log("CLIENT_ID:", process.env.CLIENT_ID);
+console.log("CLIENT_SECRET:", process.env.CLIENT_SECRET);
 const express = require('express');
 const cors = require('cors');
 const routes = require("./routes");
