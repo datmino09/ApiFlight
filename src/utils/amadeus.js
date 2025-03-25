@@ -6,6 +6,7 @@ let token = "";
 
 const getToken = async () => {
     try {
+      
         const response = await axios.post(`${AMADEUS_API}/v1/security/oauth2/token`, 
             new URLSearchParams({
                 grant_type: "client_credentials",
@@ -14,9 +15,10 @@ const getToken = async () => {
             }).toString(), 
             { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         );
-
+        
         token = response.data.access_token;
         console.log("🎟️ Token mới:", token);
+       
     } catch (error) {
         console.error("❌ Lỗi lấy token:", error.response?.data || error.message);
     }
@@ -35,5 +37,7 @@ const requestWithRetry = async (url, params) => {
         throw error;
     }
 };
+
+
 
 module.exports = { getToken, requestWithRetry, AMADEUS_API };
