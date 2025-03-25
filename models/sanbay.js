@@ -12,7 +12,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     MaKhuVuc: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'khuvuc',
+        key: 'MaKhuVuc'
+      }
     },
     QuocGia: {
       type: DataTypes.STRING(100),

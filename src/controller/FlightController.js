@@ -1,6 +1,5 @@
 const { book } = require('../models');  // Import từ db đã khởi tạo các mô hình
 const { requestWithRetry, AMADEUS_API } = require('../utils/amadeus');
-const axios = require('axios');
 
 class FlightController {
     // Tìm kiếm chuyến bay
@@ -39,6 +38,7 @@ class FlightController {
                 lastName: orderData.lastName,
                 email: orderData.email,
                 bookingDate: new Date(),
+                user_id: orderData.user_id
             });
 
             res.status(200).json({
