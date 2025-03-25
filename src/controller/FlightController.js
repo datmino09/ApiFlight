@@ -21,39 +21,86 @@ class FlightController {
             res.status(500).json({ error: error.response?.data || error.message });
         }
     }
-    // Đặt vé
     async bookFlight(req, res) {
-        const orderData = req.body;  // Nhận dữ liệu từ phía client
-
-        // Kiểm tra dữ liệu đầu vào
-        if (!orderData.flightOfferId || !orderData.firstName || !orderData.lastName || !orderData.email) {
-            return res.status(400).json({ error: 'Thiếu thông tin đặt vé!' });
+            const orderData = req.body;
+            if (
+                !orderData.flightOfferId ||
+                !orderData.firstName ||
+                !orderData.lastName ||
+                !orderData.email ||
+                !orderData.origin ||
+                !orderData.destination ||
+                !orderData.duration ||
+                !orderData.AirlineName ||
+                !orderData.departureTime ||
+                !orderData.arrivalTime ||
+                !orderData.quantityAdult ||
+                !orderData.quantityChildren ||
+                !orderData.totalPrice
+            ) {
+                return res.status(400).json({ error: 'Thiếu thông tin đặt vé!' });
+            }
+        
+            try {
+             
+                const newBooking = await book.create({
+                    flightOfferId: orderData.flightOfferId,
+                    firstName: orderData.firstName,
+                    lastName: orderData.lastName,
+                    email: orderData.email,
+                    bookingDate: new Date(),
+                    user_id: orderData.user_id,
+                    origin: orderData.origin,
+                    destination: orderData.destination,
+                    duration: orderData.duration,
+                    AirlineName: orderData.AirlineName,
+                    departureTime: new Date(orderData.departureTime),
+                    arrivalTime: new Date(orderData.arrivalTime),
+                    quantityAdult: orderData.quantityAdult,
+                    quantityChildren: orderData.quantityChildren,
+                    totalPrice: orderData.totalPrice
+                });
+        
+                res.status(200).json({
+                    message: 'Đặt vé thành công!',
+                    bookingId: newBooking.id,
+                    flightOfferId: newBooking.flightOfferId
+                });
+            } catch (error) {
+                console.error('❌ Lỗi khi lưu thông tin đặt vé:', error.message);
+                res.status(500).json({
+                    error: 'Lỗi khi thực hiện đặt vé',
+                    details: error.message
+                });
+            }
         }
-
-        try {
-            // Lưu thông tin đơn đặt vé vào cơ sở dữ liệu
-            const newBooking = await book.create({
-                flightOfferId: orderData.flightOfferId, // Dữ liệu chuyến bay từ client
-                firstName: orderData.firstName,
-                lastName: orderData.lastName,
-                email: orderData.email,
-                bookingDate: new Date(),
-                user_id: orderData.user_id
-            });
-
-            res.status(200).json({
-                message: 'Đặt vé thành công!',
-                bookingId: newBooking.id,
-                flightOfferId: newBooking.flightOfferId,  // ID chuyến bay từ client
-            });
-        } catch (error) {
-            console.error('❌ Lỗi khi lưu thông tin đặt vé:', error.message);
-            res.status(500).json({
-                error: 'Lỗi khi thực hiện đặt vé',
-                details: error.message
-            });
+        async getBookingsByUser(req, res) {
+            const { user_id } = req.params; // Lấy user_id từ URL
+        
+            if (!user_id) {
+                return res.status(400).json({ error: 'Thiếu user_id!' });
+            }
+        
+            try {
+                const bookings = await book.findAll({
+                    where: { user_id },
+                    order: [['bookingDate', 'DESC']], // Sắp xếp theo thời gian đặt vé mới nhất
+                });
+        
+                if (!bookings.length) {
+                    return res.status(404).json({ message: 'Người dùng chưa có đơn đặt vé nào.' });
+                }
+        
+                res.status(200).json(bookings);
+            } catch (error) {
+                console.error('❌ Lỗi khi lấy danh sách đơn đặt vé:', error.message);
+                res.status(500).json({
+                    error: 'Lỗi khi lấy đơn đặt vé',
+                    details: error.message
+                });
+            }
         }
-    }
+        
 }
 
 module.exports = new FlightController();

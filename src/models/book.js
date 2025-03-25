@@ -35,6 +35,45 @@ module.exports = function(sequelize, DataTypes) {
         model: 'user',
         key: 'id'
       }
+    },
+    origin: {
+      type: DataTypes.STRING(10),
+      allowNull: false
+    },
+    destination: {
+      type: DataTypes.STRING(10),
+      allowNull: false
+    },
+    duration: {
+      type: DataTypes.STRING(20),
+      allowNull: false
+    },
+    AirlineName: {
+      type: DataTypes.STRING(10),
+      allowNull: false
+    },
+    departureTime: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    arrivalTime: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    quantityAdult: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    quantityChildren: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    totalPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0.00
     }
   }, {
     sequelize,

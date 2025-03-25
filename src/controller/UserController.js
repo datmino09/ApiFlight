@@ -32,7 +32,7 @@ class UserController {
         username
       );
       if (isExist) {
-        return res.status(409).json({ message: "Tài khoản đã tồn tại!",success:false });
+        return res.json({ message: "Tài khoản đã tồn tại!",success:false });
       }
       const newUser = await User.create({ username, password: password_md5 });
 
